@@ -45,7 +45,6 @@ def criteria_gamma(bin_number_list):
 
     gamma = int(candidate_list[0], 2)
 
-    print(gamma)
     return gamma
 
 
@@ -67,7 +66,6 @@ def criteria_epsilon(bin_number_list):
 
     epsilon = int(candidate_list[0], 2)
 
-    print(epsilon)
     return epsilon
 
 
