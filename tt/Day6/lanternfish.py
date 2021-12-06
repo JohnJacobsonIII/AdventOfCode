@@ -19,7 +19,7 @@ def get_new_fish_spawn_routine(day, fish_spawn_routine):
     return
 
 
-def get_etas_after_n_days(days, fish_spawn_routine):
+def get_new_fish_spawn_routine_n_days(days, fish_spawn_routine):
     for i in range(days):
         get_new_fish_spawn_routine(i % 7, fish_spawn_routine)
 
@@ -36,7 +36,7 @@ def main():
 
     fish_spawn_routine = load_data(arguments.file)
 
-    print(get_etas_after_n_days(256, fish_spawn_routine))
+    print(get_new_fish_spawn_routine_n_days(256, fish_spawn_routine))
 
 
 if __name__ == "__main__":
