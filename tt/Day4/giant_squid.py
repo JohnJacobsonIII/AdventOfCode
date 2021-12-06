@@ -81,7 +81,8 @@ def last_board(bingo_numbers, boards):
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
     parser.add_argument('-f', '--file',
-                        help='Input file containing integer values on each line representing depths',
+                        help='Input file with first line containing order of bingo numbers followed by '
+                             'bingo boards',
                         default='input.txt')
     parser.add_argument('-c', '--code',
                         help='Select 1: Select 1st winning board or 2: Select last winning board',

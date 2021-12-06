@@ -72,7 +72,7 @@ def criteria_epsilon(bin_number_list):
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
     parser.add_argument('-f', '--file',
-                        help='Input file containing integer values on each line representing depths',
+                        help='Input file with each line containing binary numbers.',
                         default='input.txt')
     parser.add_argument('-c', '--code',
                         help='Select 1: count bits or 2: Bit criteria',
