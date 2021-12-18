@@ -79,7 +79,7 @@ def last_board(bingo_numbers, boards):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
+    parser = argparse.ArgumentParser(description='AoC Day 4 Bingo with Squid')
     parser.add_argument('-f', '--file',
                         help='Input file with first line containing order of bingo numbers followed by '
                              'bingo boards',

@@ -27,7 +27,7 @@ def get_new_fish_spawn_routine_n_days(days, fish_spawn_routine):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
+    parser = argparse.ArgumentParser(description='AoC Day 6 Count LanternFish')
     parser.add_argument('-f', '--file',
                         help='Input file with a single line containing estimated times to spawn new lanternfish'
                              'for each lantern fish',

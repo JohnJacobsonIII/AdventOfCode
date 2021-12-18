@@ -91,7 +91,7 @@ def count_danger_points(code, lines, max_x_coordinate, max_y_coordinate):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
+    parser = argparse.ArgumentParser(description='AoC Day 5 Vent Danger spots')
     parser.add_argument('-f', '--file',
                         help='Input file with each line containing start and end points of a line representing'
                              'thermal vents',

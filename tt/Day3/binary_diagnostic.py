@@ -70,7 +70,7 @@ def criteria_epsilon(bin_number_list):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='AoC Day 1 Sonar Sweeper')
+    parser = argparse.ArgumentParser(description='AoC Day 3 Rate calculation')
     parser.add_argument('-f', '--file',
                         help='Input file with each line containing binary numbers.',
                         default='input.txt')
