@@ -29,8 +29,7 @@ def find_fuel_required(horizontal_positions_list, cost_function):
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 7 Treachery of Whales')
     parser.add_argument('-f', '--file',
-                        help='Input file with each line containing start and end points of a line representing'
-                             'thermal vents',
+                        help='Input file with a single line containing position of crab submarines.',
                         default='input.txt')
     parser.add_argument('-c', '--code',
                         help='Select 1: Constant cost function only or 2: Linear cost function',
