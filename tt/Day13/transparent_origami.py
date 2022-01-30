@@ -40,6 +40,7 @@ def fold_paper(coordinates, fold_instruction):
 
     return new_coordinates
 
+
 def print_grid(coordinates, max_x, max_y):
     grid = []
     for i in range(max_y):
@@ -54,6 +55,7 @@ def print_grid(coordinates, max_x, max_y):
         print(grid[i])
 
     return
+
 
 def dots_after_first_fold(coordinates, fold_instructions):
     new_coordinates = fold_paper(coordinates, fold_instructions[0])
