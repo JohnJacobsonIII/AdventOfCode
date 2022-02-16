@@ -1,4 +1,5 @@
 import argparse
+from colorama import init, Fore, Back, Style
 
 MAXINT = 9999999
 
@@ -9,45 +10,95 @@ def load_data(file_name):
         for line in f:
             numbers = []
             for char in line.strip():
-                numbers.append([int(char), MAXINT, False])
+                numbers.append([int(char), MAXINT])
             data.append(numbers)
 
     return data
 
 
-def print_grid(grid, index):
+def print_grid(grid, index, m=-1, n=-1):
     for i in range(len(grid)):
-        number_list = []
+        print()
         for j in range(len(grid[i])):
-            number_list.append(grid[i][j][index])
-        print(number_list)
+            if m==i and n==j:
+                print(Fore.GREEN + str(grid[i][j][index]).center(4), end='')
+                print(",", end='')
+            else:
+                print(str(grid[i][j][index]).center(4)+",", end='')
+
+    print()
+
+
+def print_grid_path(grid):
+    path_grid = []
+    for i in range(len(grid)):
+        path_grid.append([])
+        for j in range(len(grid)):
+            path_grid[i].append(0)
+
+    i=len(grid)-1
+    j=len(grid[0])-1
+    path_grid[i][j]=1
+    while path_grid[0][0]!=1:
+        if j>0 and grid[i][j][1]==grid[i][j-1][1]+grid[i][j][0]:
+            path_grid[i][j-1]=1
+            j=j-1
+        elif j<len(grid[i])-1 and grid[i][j][1]==grid[i][j+1][1]+grid[i][j][0]:
+            path_grid[i][j+1]=1
+            j=j+1
+        elif i>0 and grid[i][j][1]==grid[i-1][j][1]+grid[i][j][0]:
+            path_grid[i-1][j]=1
+            i=i-1
+        elif j<len(grid)-1 and grid[i][j][1]==grid[i+1][j][1]+grid[i][j][0]:
+            path_grid[i+1][j]=1
+            i=i+1
+        else:
+            print("Examine: (", i, ",", j, ")")
+            print_grid(grid, 0, i, j)
+            print_grid(grid, 1, i, j)
+            break
+
+    for i in range(len(path_grid)):
+        print()
+        for j in range(len(path_grid[i])):
+            if path_grid[i][j]:
+                print(Fore.GREEN + str(path_grid[i][j]), end='')
+            else:
+                print(path_grid[i][j], end='')
+    print()
 
 
 def calculate_lowest_risk_level(grid):
-    grid[0][0] = [0, 0, False]
+    grid[0][0] = [0, 0]
     coordinates_to_evaluate = [(0, 0)]
     count = 0
     while coordinates_to_evaluate:
         count = count + 1
+        coordinates_to_evaluate.sort(key=lambda k:k[1])
         (y, x) = coordinates_to_evaluate.pop(0)
         if x > 0 and grid[y][x-1][1] > grid[y][x][1] + grid[y][x-1][0]:
             grid[y][x-1][1] = grid[y][x][1] + grid[y][x-1][0]
-            if (y, x-1) not in coordinates_to_evaluate and not grid[y][x-1][2]:
+            if (y, x-1) not in coordinates_to_evaluate:
                 coordinates_to_evaluate.append((y, x-1))
         if x < len(grid[y]) - 1 and grid[y][x+1][1] > grid[y][x][1] + grid[y][x+1][0]:
             grid[y][x+1][1] = grid[y][x][1] + grid[y][x+1][0]
-            if (y, x+1) not in coordinates_to_evaluate  and not grid[y][x+1][2]:
+            if (y, x+1) not in coordinates_to_evaluate:
                 coordinates_to_evaluate.append((y, x+1))
         if y > 0 and grid[y-1][x][1] > grid[y][x][1] + grid[y-1][x][0]:
             grid[y-1][x][1] = grid[y][x][1] + grid[y-1][x][0]
-            if (y-1, x) not in coordinates_to_evaluate and not grid[y-1][x][2]:
+            if (y-1, x) not in coordinates_to_evaluate:
                 coordinates_to_evaluate.append((y-1, x))
         if y < len(grid) - 1 and grid[y+1][x][1] > grid[y][x][1] + grid[y+1][x][0]:
             grid[y+1][x][1] = grid[y][x][1] + grid[y+1][x][0]
-            if (y+1, x) not in coordinates_to_evaluate and not grid[y+1][x][2]:
+            if (y+1, x) not in coordinates_to_evaluate:
                 coordinates_to_evaluate.append((y+1, x))
-        grid[y][x][2] = True
+
     print(count)
+    # print_grid(grid, 0)
+    # print()
+    # print_grid(grid, 1)
+    # print()
+    # print_grid_path(grid)
     return grid[len(grid)-1][len(grid[len(grid)-1])-1][1]
 
 
@@ -68,8 +119,6 @@ def calculate_lowest_risk_level_extended_grid(grid):
                         extended_grid[len(grid)*m + i][len(grid[i])*n + j][0] = (grid[i][j][0]+m+n) % 10 + 1
                     extended_grid[len(grid)*m + i][len(grid[i])*n + j][1] = MAXINT
 
-    # print_grid(extended_grid, 0)
-
     return calculate_lowest_risk_level(extended_grid)
 
 
@@ -83,9 +132,8 @@ def main():
                         type=int,
                         default=1)
     arguments = parser.parse_args()
-
+    init(autoreset=True)
     grid = load_data(arguments.file)
-    # print_grid_with_path(grid)
     if arguments.code == 1:
         print(calculate_lowest_risk_level(grid))
     elif arguments.code == 2:
