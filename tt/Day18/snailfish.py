@@ -1,6 +1,8 @@
 import argparse
 import itertools
 import math
+from colorama import Fore, Style
+from copy import deepcopy
 
 packet_metadata = []
 
@@ -44,21 +46,120 @@ class SnailFishNumber:
 
         loop = True
         # Repeat till no condition is satisfied
+        step = 0
         while loop:
-            print(new_snailfish_number)
+            # print(new_snailfish_number)
+            step += 1
             if new_snailfish_number.left_depth==4 or new_snailfish_number.right_depth==4:
+                # print(str(step).ljust(4), 'Exploding: ', end='')
+                # print(new_snailfish_number.print_with_exploding_highlight(5, False)[0])
                 new_snailfish_number.explode(5)
-                # print(new_snailfish_number)
                 new_snailfish_number.recalibrate_depths()
                 # Loop again to check the first rule
                 continue
-            elif new_snailfish_number.split():
+            # print(str(step).ljust(4), 'Splitting: ', end='')
+            # print(new_snailfish_number.print_with_splitting_highlight(False)[0])
+            if new_snailfish_number.split():
                 new_snailfish_number.recalibrate_depths()
-                continue
             else:
                 # Time to exit loop
                 loop = False
         return new_snailfish_number
+
+    def __eq__(self, other):
+        """
+        Compares if two SnailFishNumbers are the same
+
+        Example:
+        >>> example1 = parse_snailfish_number('[[[0,7],4],[9,[0,9]]],[1,1]]')[0]
+        >>> example2 = parse_snailfish_number('[[[0,7],4],[9,[0,9]]],[1,1]]')[0]
+        >>> example1 == example2
+        True
+        """
+        if isinstance(other, SnailFishNumber):
+            return self.type == other.type and \
+                   self.parent == other.parent and \
+                   self.left_depth == other.left_depth and \
+                   self.right_depth == other.right_depth
+        return False
+
+    def print_with_exploding_highlight(self, assumed_depth, number_found):
+        """
+        Highlights the exploding pair
+
+        Example:
+        >>> print(parse_snailfish_number('[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]')[0].print_with_exploding_highlight(5, False)[0])
+        [[[[\x1b[32m[4,3]\x1b[0m,4],4],[7,[[8,4],9]]],[1,1]]
+
+        """
+        returning_string = ''
+
+        # Found pair to be exploded
+        if assumed_depth == 1 and not number_found:
+            returning_string += Fore.GREEN + '[' + str(self.left) + ',' + str(self.right) + ']' + Style.RESET_ALL
+            number_found = True
+        else:
+            returning_string += '['
+
+            # Probing the left branch
+            if isinstance(self.left, int):
+                returning_string += str(self.left)
+            else:
+                left_string, number_found = self.left.print_with_exploding_highlight(assumed_depth-1, number_found)
+                returning_string += left_string
+            returning_string += ','
+
+            # Probing the right branch
+            if isinstance(self.right, int):
+                returning_string += str(self.right)
+            else:
+                right_string, number_found = self.right.print_with_exploding_highlight(assumed_depth-1, number_found)
+                returning_string += right_string
+
+            returning_string += ']'
+        return returning_string, number_found
+
+    def print_with_splitting_highlight(self, number_found):
+        """
+        Highlights the splitting number
+
+        Example:
+        >>> example1 = parse_snailfish_number('[[[0,7],4],[9,[0,9]]],[1,1]]')[0]
+        >>> example1.left.right.left += 6
+        >>> example1.left.right.right.right += 4
+        >>> print(example1.print_with_splitting_highlight(False)[0])
+        [[[[0,7],4],[\x1b[32m15\x1b[0m,[0,13]]],[1,1]]
+        """
+        returning_string = '['
+
+        # Probing the left branch
+        if isinstance(self.left, int):
+            # Found number to be split
+            if self.left > 9 and not number_found:
+                returning_string += Fore.GREEN + str(self.left) + Style.RESET_ALL
+                number_found = True
+            else:
+                returning_string += str(self.left)
+        else:
+            left_string, number_found = self.left.print_with_splitting_highlight(number_found)
+            returning_string += left_string
+
+        returning_string += ','
+
+        # Probing the right branch
+        if isinstance(self.right, int):
+            # Found number to be split
+            if self.right > 9 and not number_found:
+                returning_string += Fore.GREEN + str(self.right) + Style.RESET_ALL
+                number_found = True
+            else:
+                returning_string += str(self.right)
+        else:
+            right_string, number_found = self.right.print_with_splitting_highlight(number_found)
+            returning_string += right_string
+        returning_string += ']'
+
+        return returning_string, number_found
 
     def split(self):
         """
@@ -83,6 +184,13 @@ class SnailFishNumber:
         False
         >>> print(example3)
         [[1,9],[8,5]]
+        >>> example4 = parse_snailfish_number('[[[7,7],[7,8]],[[9,5],[8,0]]],[[[9,9],9],[8,[9,0]]]]')[0]
+        >>> example4.right.left.left.right += 1
+        >>> example4.right.left.right += 11
+        >>> example4.split()
+        True
+        >>> print(example4)
+        [[[[7,7],[7,8]],[[9,5],[8,0]]],[[[9,[5,5]],20],[8,[9,0]]]]
         """
         result = False
         if not isinstance(self.left, SnailFishNumber) and self.left > 9:
@@ -91,16 +199,16 @@ class SnailFishNumber:
             self.left.parent = self
             self.left.type = 0
             result = True
-        elif not isinstance(self.right, SnailFishNumber) and self.right > 9:
+        elif isinstance(self.left, SnailFishNumber):
+            result = self.left.split()
+
+        if not isinstance(self.right, SnailFishNumber) and self.right > 9 and not result:
             new_pair = SnailFishNumber(math.floor(self.right / 2), math.ceil(self.right / 2))
             self.right = new_pair
             self.right.parent = self
             self.right.type = 1
             result = True
-
-        if isinstance(self.left, SnailFishNumber) and not result:
-            result = self.left.split()
-        if isinstance(self.right, SnailFishNumber) and not result:
+        elif isinstance(self.right, SnailFishNumber) and not result:
             result = self.right.split()
 
         return result
@@ -343,28 +451,146 @@ def load_data(file_name):
     return list_snailfish_numbers
 
 
+# def magnitude(snailfish_string):
+#     """
+#     Gives the magnitude of the string snailfish number
+#
+#     Example:
+#     >>> magnitude('9,1]')[0]
+#     29
+#     >>> magnitude('1,9]')[0]
+#     21
+#     >>> magnitude('[9,1],[1,9]]')[0]
+#     129
+#     >>> magnitude('[1,2],[[3,4],5]]')[0]
+#     143
+#     >>> magnitude('[[[0,7],4],[[7,8],[6,0]]],[8,1]]')[0]
+#     1384
+#     >>> magnitude('[[[1,1],[2,2]],[3,3]],[4,4]]')[0]
+#     445
+#     >>> magnitude('[[[3,0],[5,3]],[4,4]],[5,5]]')[0]
+#     791
+#     >>> magnitude('[[[5,0],[7,4]],[5,5]],[6,6]]')[0]
+#     1137
+#     >>> magnitude('[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]')[0]
+#     3488
+#     """
+#     magnitudes=[]
+#
+#     # Looping twice because there are two snailfish numbers within a snailfish number.
+#     for i in range(2):
+#         if snailfish_string[0] != '[':
+#             magnitudes.append(int(snailfish_string[0]))
+#             snailfish_string = snailfish_string[2:]
+#         else:
+#             magnitude_of_snailfish_number, snailfish_string = magnitude(snailfish_string[1:])
+#             magnitudes.append(magnitude_of_snailfish_number)
+#
+#     return 3*magnitudes[0] + 2*magnitudes[1], snailfish_string[1:]
+#
+#
+# def explode(snailfish_string, current_index, count_open_brackets):
+#     """
+#     Explodes the leftmost pair nested inside 4 snailfish numbers
+#
+#     Example:
+#     >>> explode('[[[[9,8],1],2],3],4]')
+#     [[[[0,9],2],3],4]
+#     >>> explode('7,[6,[5,[4,[3,2]]]]]')
+#     [7,[6,[5,[7,0]]]]
+#     >>> explode('[6,[5,[4,[3,2]]]],1]')
+#     [[6,[5,[7,0]]],3]
+#     >>> explode('[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]')
+#     [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]
+#     >>> explode('[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]')
+#     [[3,[2,[8,0]]],[9,[5,[7,0]]]]
+#     """
+#     magnitudes = []
+#
+#     # This ensures we reached the pair to be exploded
+#     if count_open_brackets == 5:
+#         # Asserting that we have a number
+#         assert snailfish_string[current_index].isdigit()
+#
+#         # Looping twice since there are two numbers in a pair to be exploded
+#         for i in range(2):
+#             # Forming the number from multiple digits
+#             local_index = current_index
+#             number = 0
+#             multiplier = 1
+#             while snailfish_string[local_index].isdigit():
+#                 number += multiplier*snailfish_string[local_index]
+#                 multiplier *= 10
+#                 local_index += 1
+#
+#             # Add number to the immediate left regular number
+#             if i == 0:
+#                 local_index_to_add_to_left = current_index-1
+#                 while not snailfish_string[local_index_to_add_to_left].isdigit():
+#                     local_index_to_add_to_left -= 1
+#
+#                 # Asserting we reached the end of the first number in pair and that it was indeed the first number since
+#                 # it was followed by a comma.
+#                 assert snailfish_string[local_index] == ','
+#                 local_index += 1
+#             # Add number to the immediate right regular number
+#             elif i == 1:
+#
+#
+#
+#             if snailfish_string[current_index] ==
+#
+#     # Looping twice because there are two snailfish numbers within a snailfish number.
+#     for i in range(2):
+#         if snailfish_string[0] != '[':
+#             magnitudes.append(int(snailfish_string[0]))
+#             snailfish_string = snailfish_string[2:]
+#         else:
+#             magnitude_of_snailfish_number, snailfish_string = magnitude(snailfish_string[1:])
+#             magnitudes.append(magnitude_of_snailfish_number)
+#
+#     return 3 * magnitudes[0] + 2 * magnitudes[1], snailfish_string[1:]
+
+
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 18 SnailFish')
     parser.add_argument('-f', '--file',
                         help='Input file with nested list of pairs of integers.',
                         default='input.txt')
     parser.add_argument('-c', '--code',
-                        help='Select 1: or 2: ',
+                        help='Select 1: Sum of Snailfish numbers or 2: Find greatest magnitude of two snailfish '
+                             'numbers',
                         type=int,
                         default=1)
     arguments = parser.parse_args()
 
+    # magnitude()
+    # exit(0)
     list_snailfish_numbers = load_data(arguments.file)
     if arguments.code == 1:
         result = list_snailfish_numbers[0]
         for num in list_snailfish_numbers[1:]:
             result = result + num
 
-        print(result)
-    # elif arguments.code == 2:
-    #     initial_velocities = all_initial_velocities(target_area)
-    # else:
-    #     print("Selected code not valid")
+        print(result.magnitude())
+    elif arguments.code == 2:
+        greatest_magnitude = 0
+        for i in range(len(list_snailfish_numbers)):
+            for j in range(i+1, len(list_snailfish_numbers)):
+                for k in range(2):
+                    snailfish_number_one = deepcopy(list_snailfish_numbers[i])
+                    snailfish_number_two = deepcopy(list_snailfish_numbers[j])
+
+                    if not k:
+                        result_magnitude = (snailfish_number_one + snailfish_number_two).magnitude()
+                    elif k:
+                        result_magnitude = (snailfish_number_two + snailfish_number_one).magnitude()
+                    if result_magnitude > greatest_magnitude:
+                        greatest_magnitude = result_magnitude
+
+        print(greatest_magnitude)
+    else:
+        print("Selected code not valid")
 
 
 if __name__ == "__main__":
