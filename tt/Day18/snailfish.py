@@ -1,10 +1,7 @@
 import argparse
-import itertools
 import math
 from colorama import Fore, Style
 from copy import deepcopy
-
-packet_metadata = []
 
 
 class SnailFishNumber:
