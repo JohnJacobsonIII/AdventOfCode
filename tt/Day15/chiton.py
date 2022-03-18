@@ -98,7 +98,7 @@ def calculate_lowest_risk_level(grid):
     # print()
     # print_grid(grid, 1)
     # print()
-    # print_grid_path(grid)
+    print_grid_path(grid)
     return grid[len(grid)-1][len(grid[len(grid)-1])-1][1]
 
 
