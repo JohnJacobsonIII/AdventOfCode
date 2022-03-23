@@ -486,6 +486,7 @@ def load_data(file_name):
     with open(file_name, 'r') as f:
         for line in f:
             if line == '\n':
+                line.isdi
                 scanner_list.append(Scanner(scanner_identifier, beacons))
                 continue
             elif len(line) > 15:
@@ -505,7 +506,7 @@ def load_data(file_name):
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 19 Beacon Scanner')
     parser.add_argument('-f', '--file',
-                        help='Input file with coordinates to the target area grid.',
+                        help='Input file with scanners and relative coordinates of beacons.',
                         default='input.txt')
     parser.add_argument('-c', '--code',
                         help='Select 1: Find total number of beacons or 2: Find manhatten distance of scanners furthest '
