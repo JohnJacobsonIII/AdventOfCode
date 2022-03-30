@@ -136,11 +136,11 @@ class DiracDie():
     player2_wins : int
         Number of universes player 2 has won in
     game_results : dict
-        Dictionary ((player1_position, player2_position, player1_score, player2_score, roll) -> #player1 wins,
-        #player2 wins) of game state and the corresponding result.
+        Dictionary ((player1_position, player2_position, player1_score, player2_score, player_turn, roll) ->
+        #player1 wins, #player2 wins) of game state and the corresponding result.
 
     """
-    def __init__(self, player1_start_position, player2_start_position):
+    def __init__(self, player1_start_position, player2_start_position, target_score):
         """
         Class initializer
 
@@ -164,6 +164,7 @@ class DiracDie():
         self.player1_wins = 0
         self.player2_wins = 0
         self.game_results = {}
+        self.target_score = target_score
 
     def __str__(self):
         """
@@ -177,12 +178,14 @@ class DiracDie():
         Player 1 wins    : 0
         Player 2 wins    : 0
         Game results     : 0
+        Target score     : 21
         """
         returning_str = "Player 1 start".ljust(17) + ": " + str(self.player1_start_position) + '\n'
         returning_str += "Player 2 start".ljust(17) + ": " + str(self.player2_start_position) + '\n'
         returning_str += "Player 1 wins".ljust(17) + ": " + str(self.player1_wins) + '\n'
         returning_str += "Player 2 wins".ljust(17) + ": " + str(self.player2_wins) + '\n'
-        returning_str += "Game results".ljust(17) + ": " + str(len(self.game_results))
+        returning_str += "Game results".ljust(17) + ": " + str(len(self.game_results)) + '\n'
+        returning_str += "Target score".ljust(17) + ": " + str(self.target_score)
 
         return returning_str
 
@@ -216,20 +219,24 @@ class DiracDie():
         player2_position = game.player2_position
         player1_score = game.player1_score
         player2_score = game.player2_score
+        player_turn = game.turn
 
         # Check whether game_results contains the result
-        if (player1_position, player2_position, player1_score, player2_score, die_roll_sum) in self.game_results:
-            return self.game_results[(player1_position, player2_position, player1_score, player2_score, die_roll_sum)]
+        if (player1_position, player2_position, player1_score, player2_score, player_turn, die_roll_sum) in self.game_results:
+            return self.game_results[(player1_position, player2_position, player1_score, player2_score, player_turn,
+                                      die_roll_sum)]
 
         # Play the next turn
         game.play_next_turn(die_roll_sum)
 
         # If game ended, update the appropriate player's #wins and add entry to game_results
-        if game.player1_score >= 21:
-            self.game_results[(player1_position, player2_position, player1_score, player2_score, die_roll_sum)] = (1, 0)
+        if game.player1_score >= self.target_score:
+            self.game_results[(player1_position, player2_position, player1_score, player2_score, player_turn,
+                               die_roll_sum)] = (1, 0)
             return 1, 0
-        elif game.player2_score >= 21:
-            self.game_results[(player1_position, player2_position, player1_score, player2_score, die_roll_sum)] = (0, 1)
+        elif game.player2_score >= self.target_score:
+            self.game_results[(player1_position, player2_position, player1_score, player2_score, player_turn,
+                               die_roll_sum)] = (0, 1)
             return 0, 1
 
         # Calculate the total wins by each player for each triple die roll that was played.
@@ -251,7 +258,8 @@ class DiracDie():
                 total_player1_wins += 7 * player_1_wins
                 total_player2_wins += 7 * player_2_wins
 
-        self.game_results[(player1_position, player2_position, player1_score, player2_score, die_roll_sum)] = (total_player1_wins, total_player2_wins)
+        self.game_results[(player1_position, player2_position, player1_score, player2_score, player_turn,
+                           die_roll_sum)] = (total_player1_wins, total_player2_wins)
         return total_player1_wins, total_player2_wins
 
     def play_game_driver(self):
@@ -268,11 +276,21 @@ class DiracDie():
 
         Example:
         >>> object1 = load_data("test.txt", 2)
+        >>> object1.target_score = 1
         >>> object1.play_game_driver()
-        >>> print(object1.player1_wins)
-        >>> print(object1.player2_wins)
-        >>> assert object1.player1_wins == 444356092776315
-        >>> assert object1.player2_wins == 341960390180808
+        >>> assert object1.player1_wins == 27
+        >>> assert object1.player2_wins == 0
+
+        >>> object2 = load_data("test.txt", 2)
+        >>> object2.target_score = 2
+        >>> object2.play_game_driver()
+        >>> assert object2.player1_wins == 183
+        >>> assert object2.player2_wins == 156
+
+        >>> object3 = load_data("test.txt", 2)
+        >>> object3.play_game_driver()
+        >>> assert object3.player1_wins == 444356092776315
+        >>> assert object3.player2_wins == 341960390180808
         """
         # Initialize the game state to the beginning
         game = DieGame(self.player1_start_position, self.player2_start_position)
@@ -541,7 +559,7 @@ def load_data(file_name, code):
     if code == 1:
         return DeterministicDie(player1_start_position, player2_start_position)
     elif code == 2:
-        return DiracDie(player1_start_position, player2_start_position)
+        return DiracDie(player1_start_position, player2_start_position, 21)
 
 
 def main():
