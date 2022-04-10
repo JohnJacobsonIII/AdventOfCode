@@ -1,5 +1,5 @@
 import argparse
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore
 
 MAXINT = 9999999
 
@@ -123,6 +123,7 @@ def calculate_lowest_risk_level_extended_grid(grid):
 
 
 def main():
+    init(autoreset=True)
     parser = argparse.ArgumentParser(description='AoC Day 15 Chiton')
     parser.add_argument('-f', '--file',
                         help='Input file with a number grid representing risk level in cave.',
@@ -132,7 +133,7 @@ def main():
                         type=int,
                         default=1)
     arguments = parser.parse_args()
-    init(autoreset=True)
+
     grid = load_data(arguments.file)
     if arguments.code == 1:
         print(calculate_lowest_risk_level(grid))
