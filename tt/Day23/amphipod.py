@@ -1,52 +1,85 @@
 import argparse
 
 
-class Amphipod(object):
+class Configuration(object):
     """
-    Class representing amphipod configuration
+    Class representing Configuration
 
     Attributes
     ----------
+    configuration: list
+        Configuration of amphipods
+
     """
-    def __init__(self):
+    def __init__(self, configuration):
         """
         Class initializer
 
         Example:
+        >>> object1 = load_data("test1.txt")
+        >>> assert len(object1.configuration) == 5
+        >>> print(len(object1.configuration[-1]))
+        13
+        >>> print(len(object1.configuration[-2]))
+        13
+        >>> for line in object1.configuration:
+        ...     assert len(line) == 13
         """
-        self.space_list = []
+        self.configuration = configuration
 
     def __str__(self):
         """
         String representation of this class
 
         Example:
+        >>> object1 = load_data("test1.txt")
+        >>> print(object1) # doctest: +NORMALIZE_WHITESPACE
+        Configuration:
+        #############
+        #...........#
+        ###B#C#B#D###
+          #A#D#C#A#
+          #########
         """
-        returning_str = "Cubes:\n"
-        for space in self.space_list:
-            for coordinate, interval in space.items():
-                returning_str += coordinate + ": [" + str(interval[0]).ljust(6) + ',' + str(interval[1]).ljust(6) + "],"
+        returning_str = "Configuration:\n"
+        for line in self.configuration:
+            returning_str += "".join(line) + '\n'
 
         return returning_str
 
+    def __repr__(self):
+        """
+        All information about the object of this class
+
+        Example:
+
+        """
+
+
+class AmphipodStabilization(object):
+    """
+    Class repre
+    """
+
 
 def load_data(file_name):
-    reboot_steps = []
+    initial_configuration = []
     with open(file_name, 'r') as f:
         for line in f:
-            instruction, cuboid = line.strip().split(' ')
-            cuboid = cuboid.split(',')
-            cuboid_coords = {coordinate[0]: [int(coordinate[2:].split('..')[0]), int(coordinate[2:].split('..')[1])] for
-                             coordinate in cuboid}
-            reboot_steps.append((True if instruction=="on" else False, cuboid_coords))
+            initial_configuration.append(list(line.strip('\n')))
 
-    return
+    initial_configuration[-2].append(' ')
+    initial_configuration[-2].append(' ')
+    initial_configuration[-1].append(' ')
+    initial_configuration[-1].append(' ')
+
+    return Configuration(initial_configuration)
 
 
 def main():
     parser = argparse.ArgumentParser(description='AoC Day 23 Amphipod')
     parser.add_argument('-f', "--file",
-                        help="Input file with each line containing initial configuration of amphipods.",
+                        help="Input file containing initial configuration of amphipods.",
                         default="input.txt")
     parser.add_argument('-c', "--code",
                         help="Select 1: Find least energy to get to final amphipod configuration, 2: ",
@@ -54,9 +87,9 @@ def main():
                         default=1)
     arguments = parser.parse_args()
 
-    temp = load_data(arguments.file)
+    initial_configuration = load_data(arguments.file)
 
-    print()
+    print(initial_configuration)
 
     if arguments.code == 1:
         print()

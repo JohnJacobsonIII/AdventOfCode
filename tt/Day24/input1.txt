@@ -1,0 +1,257 @@
+inp w    # w=i1, x=0, y=0, z=0
+mul x 0  # w=i1, x=0, y=0, z=0
+add x z  # w=i1, x=0, y=0, z=0
+mod x 26 # w=i1, x=0, y=0, z=0
+div z 1  # w=i1, x=0, y=0, z=0
+add x 10 # w=i1, x=10, y=0, z=0
+eql x w  # w=i1, x=0, y=0, z=0
+eql x 0  # w=i1, x=1, y=0, z=0
+mul y 0  # w=i1, x=1, y=0, z=0
+add y 25 # w=i1, x=1, y=25, z=0
+mul y x  # w=i1, x=1, y=25, z=0
+add y 1  # w=i1, x=1, y=26, z=0
+mul z y  # w=i1, x=1, y=26, z=0
+mul y 0  # w=i1, x=1, y=0, z=0
+add y w  # w=i1, x=1, y=i1, z=0
+add y 1  # w=i1, x=1, y=i1+1, z=0
+mul y x  # w=i1, x=1, y=i1+1, z=0
+add z y  # w=i1, x=1, y=i1+1, z=i1+1
+inp w    # w=i1, x=1, y=i1+1, z=i1+1
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 9
+mul y x
+add z y  # z=26(i1+1)+i2+9
+inp w    # w=i3, x=?, y=?, z=26(i1+1)+i2+9
+mul x 0  # w=i3, x=0, y=?, z=c
+add x z  # w=i3, x=c, y=?, z=c
+mod x 26 # w=i3, x=c%26, y=?, z=c
+div z 1  # w=i3, x=c%26, y=?, z=c
+add x 14 # w=i3, x=c%26+14, y=?, z=c
+eql x w  # w=i3, x=0, y=?, z=c
+eql x 0  # w=i3, x=1, y=?, z=c
+mul y 0  # w=i3, x=1, y=0, z=c
+add y 25 # w=i3, x=1, y=25, z=c
+mul y x  # w=i3, x=1, y=25, z=c
+add y 1  # w=i3, x=1, y=26, z=c
+mul z y  # w=i3, x=1, y=26, z=26c
+mul y 0  # w=i3, x=1, y=0, z=26c
+add y w  # w=i3, x=1, y=i3, z=26c
+add y 12 # w=i3, x=1, y=i3+12, z=26c
+mul y x  # w=i3, x=1, y=i3+12, z=26c
+add z y  # w=i3, x=1, y=i3+12, z=26(26(i1+1)+i2+9)+i3+12
+inp w    # w=i4, x=1, y=i3+12, z=26(26(i1+1)+i2+9)+i3+12
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 13
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y  z=26(26(26(i1+1)+i2+9)+i3+12)+i4+6
+inp w    # w=i5, x=?, y=?, z=26(26(26(i1+1)+i2+9)+i3+12)+i4+6
+mul x 0  # w=i5, x=0, y=?, z=e
+add x z  # w=i5, x=e, y=?, z=e
+mod x 26 # w=i5, x=e%26, y=?, z=e
+div z 26 # w=i5, x=e%26, y=?, z=e
+add x -6 # w=i5, x=(e%26)-6, y=?, z=e
+eql x w  # w=i5, x=1 if (e%26)-6==i5 else 0, y=?, z=e
+eql x 0  # w=i5, x=0 if i4==i5 else 1, y=?, z=e
+mul y 0  # w=i5, x=0 if (e%26)-6==i5 else 1, y=0, z=e
+add y 25 # w=i5, x=0 if (e%26)-6==i5 else 1, y=25, z=e
+mul y x  # w=i5, x=0 if (e%26)-6==i5 else 1, y=0 or 25, z=e
+add y 1  # w=i5, x=0 if (e%26)-6==i5 else 1, y=1 or 26, z=e
+mul z y  # w=i5, x=0 if (e%26)-6==i5 else 1, y=1 or 26, z=e or 26e
+mul y 0  # w=i5, x=0 if (e%26)-6==i5 else 1, y=0, z=e or 26e
+add y w  # w=i5, x=0 if (e%26)-6==i5 else 1, y=i5, z=e or 26e
+add y 9  # w=i5, x=0 if (e%26)-6==i5 else 1, y=i5+9, z=e or 26e
+mul y x  # w=i5, x=0 if (e%26)-6==i5 else 1, y=0 or i5+9, z=e or 26e
+add z y  # w=i5, x=0 if (e%26)-6==i5 else 1, y=0 or i5+9, z=26(26(i1+1)+i2+9)+i3+12  Conds: i4==i5
+inp w    # z=0 or 26(26(26(26(i1+1)+i2+9)+i3+12)+i4+6)+i5+9
+mul x 0
+add x z
+mod x 26 x=0 or i5+9
+div z 26 z=0 or 26(26(26(i1+1)+i2+9)+i3+12)+i4+6
+add x -14 x=-14 or i5-5
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 15
+mul y x
+add z y  # z=26(i1+1)+i2+9  Conds: i4==i5 AND i3-2==i6
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 14
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y  # z=26(26(i1+1)+i2+9)+i7+7  Conds: i4==i5 AND i3-2==i6
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 13
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 12
+mul y x
+add z y  # z=26(26(26(i1+1)+i2+9)+i7+7)+i8+12  Conds: i4==i5 AND i3-2==i6
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -8
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 15
+mul y x
+add z y  # z=26(26(i1+1)+i2+9)+i7+7  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -15
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y  # z=26(i1+1)+i2+9  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9 AND i7-8==i10
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y  # z=26(26(i1+1)+i2+9)+i11+6  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9 AND i7-8==i10
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 2
+mul y x
+add z y  # z=26(i1+1)+i2+9  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9 AND i7-8==i10 AND i11-5==i12
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -13
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 10
+mul y x
+add z y  # z=i1+1  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9 AND i7-8==i10 AND i11-5==i12 AND i2-4==i13
+inp w    # (25(1 if z%26-4 != w else 0)+1)(z/26)+(w+12)(1 if z%26-4 != w else 0) = 0
+mul x 0  # (25(1 if z%26-4 != w else 0)+1)(z/26)+(w+12)(1 if z%26-4 != w else 0) = 0
+add x z  # (25(1 if (x+z)%26-4 != w else 0)+1)(z/26)+(w+12)(1 if (x+z)%26-4 != w else 0) = 0
+mod x 26 # (25(1 if x%26-4 != w else 0)+1)(z/26)+(w+12)(1 if x%26-4 != w else 0) = 0
+div z 26 # (25(1 if x-4 != w else 0)+1)(z/26)+(w+12)(1 if x-4 != w else 0) = 0
+add x -4 # (25(1 if x-4 != w else 0)+1)z+(w+12)(1 if x-4 != w else 0) = 0
+eql x w
+eql x 0  # -12=w, 1=x==0, 0=x!=0, 0=26z+w+12, 0=z
+mul y 0  # ?=w, ?=x, 0=x(w+12), 0=(25x+1)z+x(w+12)
+add y 25 # ?=w, ?=x, 0=x(w+12), 0=(x(y+25)+1)z+x(w+12)
+mul y x  # ?=w, ?=x, 0=x(w+12), 0=(xy+1)z+x(w+12)
+add y 1  # ?=w, ?=x, 0=x(w+12), 0=(y+1)z+x(w+12)
+mul z y  # ?=w, ?=x, 0=x(w+12), 0=yz+x(w+12)
+mul y 0  # ?=w, ?=x, 0=x(w+12), 0=z+x(w+12)
+add y w  # ?=w, ?=x, ?=x(y+w+12), 0=z+x(y+w+12)
+add y 12 # ?=w, ?=x, ?=x(y+12), 0=z+x(y+12)
+mul y x  # ?=w, ?=x, ?=xy, 0=z+xy
+add z y  # ?=w, ?=x, ?=y, z=m+i14+12
+# z=0  Conds: i4==i5 AND i3-2==i6 AND i8+4==i9 AND i7-8==i10 AND i11-5==i12 AND i2-4==i13 AND i1-3==i14
+# ?=w, ?=x, ?=y, 0=z
+
+99999795919456
+45311191516111

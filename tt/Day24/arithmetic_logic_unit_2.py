@@ -1,6 +1,5 @@
 import argparse
-from copy import deepcopy
-from sympy import var, Eq, Piecewise
+from z3 import Int, If, simplify, solve, Optimize
 
 
 class MONAD(object):
@@ -12,6 +11,7 @@ class MONAD(object):
     instruction_list : list
         A list of instructions which is the input of this puzzle
     """
+
     def __init__(self, instruction_list):
         """
         Class initializer
@@ -23,14 +23,14 @@ class MONAD(object):
 
         Example:
         >>> object1 = load_data("test1.txt")
-        >>> assert len(object1.instruction_list) == 2 and len(object1.execution_list) == 1
+        >>> assert len(object1.instruction_list) == 2
         >>> object2 = load_data("test2.txt")
-        >>> assert len(object2.instruction_list) == 4 and len(object2.execution_list) == 1
+        >>> assert len(object2.instruction_list) == 4
         >>> object3 = load_data("test3.txt")
-        >>> assert len(object3.instruction_list) == 11 and len(object3.execution_list) == 1
+        >>> assert len(object3.instruction_list) == 11
         """
         self.instruction_list = instruction_list
-        self.execution_list = [(ArithmeticLogicUnit({'w': 0, 'x': 0, 'y': 0, 'z': 0}), 0, '')]
+        self.ALU = (ArithmeticLogicUnit({'w': 0, 'x': 0, 'y': 0, 'z': 0}))
 
     def __str__(self):
         """
@@ -42,13 +42,12 @@ class MONAD(object):
         Instructions:
         inp x N/A
         mul x -1
-        Program Counter: 0
-        Input String:
         Registers:
         w: 0
         x: 0
         y: 0
         z: 0
+        Counter  : 0
         <BLANKLINE>
         >>> object2=load_data("test2.txt")
         >>> print(object2)
@@ -57,13 +56,12 @@ class MONAD(object):
         inp x N/A
         mul z 3
         eql z x
-        Program Counter: 0
-        Input String:
         Registers:
         w: 0
         x: 0
         y: 0
         z: 0
+        Counter  : 0
         <BLANKLINE>
         >>> object3=load_data("test3.txt")
         >>> print(object3)
@@ -79,150 +77,66 @@ class MONAD(object):
         mod x 2
         div w 2
         mod w 2
-        Program Counter: 0
-        Input String:
         Registers:
         w: 0
         x: 0
         y: 0
         z: 0
+        Counter  : 0
         <BLANKLINE>
         """
         returning_str = "Instructions:\n"
         for instruction in self.instruction_list:
             returning_str += str(instruction) + '\n'
-
-        for execution, program_counter, input_string in self.execution_list:
-            returning_str += "Program Counter: " + str(program_counter) + '\n'
-            returning_str += "Input String:" + input_string + '\n'
-            returning_str += str(execution)
+        returning_str += str(self.ALU)
 
         return returning_str
 
-    def parse_program(self):
-        """
-
-        """
-        current_execution = self.execution_list.pop(0)[0]
-
-        # Loop till all instructions are covered.
-        for i in range(len(self.instruction_list)):
-        # for i in range(18):
-            if self.instruction_list[i].instruction == "inp":
-
-                self.execution_list.append((deepcopy(current_execution), i, ''))
-                for register in current_execution.register_dict.keys():
-                    current_execution.register_dict[register] = var(register)
-                # current_execution.register_dict[self.instruction_list[i].operand1] = var(self.instruction_list[i].operand1)
-            else:
-                assert self.instruction_list[i].instruction != "inp"
-                current_execution.execute_instruction(self.instruction_list[i])
-            # print(i + 1)
-            # print(current_execution)
-
-        self.execution_list.append((deepcopy(current_execution), len(self.instruction_list), ''))
-
-        # evaluated_list = []
-        # for input_value in range(1,10):
-        #     evaluating_execution = deepcopy(current_execution)
-        #
-        #     for register, value in evaluating_execution.register_dict.items():
-        #         if not isinstance(value, int):
-        #             evaluating_execution.register_dict[register] = value.subs(var('w'), input_value)
-        #
-        #     evaluated_list.append(evaluating_execution)
-        #     print(evaluating_execution)
-
-        for execution, program_counter, program_input in self.execution_list:
-            print(execution)
-
-    def substitute_zs(self):
-        """
-
-        """
-        for i in range(1, len(self.execution_list)):
-            z = var('z')
-            self.execution_list[i][0].register_dict['z'] = self.execution_list[i][0].register_dict['z']\
-                .subs(z, self.execution_list[i-1][0].register_dict['z'])
-
-        print("Printing substituted z ALUS:\n")
-        for execution, program_counter, program_input in self.execution_list:
-            print(execution)
-
-
-    def find_largest_model_number(self, previous_execution, index):
+    def find_largest_model_number(self):
         """
         Find the largest valid Model Number
 
         """
-        # Base case
-        if index == 15:
-            if previous_execution.register_dict['z'] == 0:
-                return True, '0'
-            else:
-                return False, '0'
 
-        for input_value in range(9, 0, -1):
-            w = var('w')
-            x = var('x')
-            y = var('y')
-            z = var('z')
-            current_execution, program_counter, input_string = deepcopy(self.execution_list[index])
-            for register in current_execution.register_dict.keys():
-                current_execution.register_dict[register] = \
-                    current_execution.register_dict[register]\
-                        .subs(w, input_value)\
-                        .subs(x, previous_execution.register_dict[register])\
-                        .subs(y, previous_execution.register_dict[register])\
-                        .subs(z, previous_execution.register_dict[register])
-            solved, solution_input_value = self.find_largest_model_number(current_execution, index+1)
+        # for i in range(len(self.instruction_list)):
+        for i in range(len(self.instruction_list)):
+            self.ALU.execute_instruction(self.instruction_list[i])
+            # print(str(i) + ':')
+            # print(self.ALU)
 
-            if solved:
-                return True, str(input_value) + solution_input_value
+        print(self.ALU)
 
-        return False, '0'
-
-    def find_largest_model_number_driver(self):
-        """
-
-        """
-        solved, solution_input_value = self.find_largest_model_number(self.execution_list[0][0], 1)
-        return solution_input_value
-
-    # def find_largest_model_number_driver(self):
-    #     """
-    #     Find the largest valid Model Number
-    #
-    #     Example:
-    #     >>> object1 = load_data("test1.txt")
-    #     >>> object1.find_largest_model_number_driver()
-    #     '9'
-    #     >>> object2 = load_data("test2.txt")
-    #     >>> object2.find_largest_model_number_driver()
-    #     '99'
-    #     >>> object3 = load_data("test3.txt")
-    #     >>> object3.find_largest_model_number_driver()
-    #     '8'
-    #     """
-    #     # Loop till no more states left
-    #     while self.execution_list != 0:
-    #         current_execution, program_counter, input_string = self.execution_list.pop(0)
-    #
-    #         while program_counter < len(self.instruction_list) and \
-    #                 self.instruction_list[program_counter].instruction != "inp":
-    #             current_execution.execute_instruction(self.instruction_list[program_counter],
-    #                                                   program_counter)
-    #             program_counter += 1
-    #         if program_counter < len(self.instruction_list):
-    #             for input_value in range(1, 10):
-    #                 duplicate_execution = deepcopy(current_execution)
-    #                 duplicate_execution.execute_instruction(self.instruction_list[program_counter], input_value)
-    #
-    #                 self.execution_list.insert(0, (duplicate_execution, program_counter+1, input_string+str(input_value)))
-    #             continue
-    #         elif program_counter == len(self.instruction_list):
-    #             if current_execution.register_dict['z'] == 0:
-    #                 return input_string
+        z = Int('z')
+        i0 = Int('i0')
+        i1 = Int('i1')
+        i2 = Int('i2')
+        i3 = Int('i3')
+        i4 = Int('i4')
+        i5 = Int('i5')
+        i6 = Int('i6')
+        i7 = Int('i7')
+        i8 = Int('i8')
+        i9 = Int('i9')
+        i10 = Int('i10')
+        i11 = Int('i11')
+        i12 = Int('i12')
+        i13 = Int('i13')
+        solve(z == self.ALU.register_dict['z'], z == 0,
+              # i0 > 0, i0 < 10
+              # i1 > 0, i1 < 10,
+              # i2 > 0, i2 < 10,
+              # i3 > 0, i3 < 10,
+              # i4 > 0, i4 < 10,
+              # i5 > 0, i5 < 10,
+              # i6 > 0, i6 < 10,
+              # i7 > 0, i7 < 10,
+              # i8 > 0, i8 < 10,
+              # i9 > 0, i9 < 10,
+              # i10 > 0, i10 < 10,
+              # i11 > 0, i11 < 10,
+              # i12 > 0, i12 < 10,
+              # i13 > 0, i13 < 10,
+              )
 
 
 class ArithmeticLogicUnit(object):
@@ -233,7 +147,10 @@ class ArithmeticLogicUnit(object):
     ----------
     register_dict : dict
         Dictionary (string -> integer) of register and its stored value
+    input_counter : int
+        Integer representing the index of this input
     """
+
     def __init__(self, register_dict):
         """
         Class initializer
@@ -247,6 +164,7 @@ class ArithmeticLogicUnit(object):
         object1.register_dict['y'] == 0 and object1.register_dict['z'] == 0
         """
         self.register_dict = register_dict
+        self.input_counter = 0
 
     def __str__(self):
         """
@@ -260,15 +178,17 @@ class ArithmeticLogicUnit(object):
         x: 0
         y: 0
         z: 0
+        Counter  : 0
         <BLANKLINE>
         """
         returning_str = "Registers:\n"
         for register, value in self.register_dict.items():
             returning_str += register + ': ' + str(value) + '\n'
+        returning_str += "Counter  : " + str(self.input_counter) + '\n'
 
         return returning_str
-    
-    def execute_instruction(self, instruction, input = "N/A"):
+
+    def execute_instruction(self, instruction, input="N/A"):
         """
         Executes the Instruction by updating registers.
 
@@ -281,24 +201,30 @@ class ArithmeticLogicUnit(object):
 
         Example:
         >>> object1 = ArithmeticLogicUnit({'w': 0, 'x': 0, 'y': 0, 'z': 0})
-        >>> object1.execute_instruction(Instructions('inp', 'w'), 4)
-        >>> assert object1.register_dict['w'] == 4
+        >>> object1.execute_instruction(Instructions('inp', 'w'))
+        >>> assert object1.register_dict['w'] == Int('i0')
         >>> object1.execute_instruction(Instructions('add', 'x', 'w'))
-        >>> assert object1.register_dict['x'] == 4
+        >>> object1.register_dict['x']
+        0 + i0
         >>> object1.execute_instruction(Instructions('mul', 'z', 3))
-        >>> assert object1.register_dict['z'] == 0
+        >>> object1.register_dict['z']
+        0
         >>> object1.execute_instruction(Instructions('div', 'x', 'w'))
-        >>> assert object1.register_dict['x'] == 1
+        >>> object1.register_dict['x']
+        (0 + i0)/i0
         >>> object1.execute_instruction(Instructions('mod', 'w', 3))
-        >>> assert object1.register_dict['w'] == 1
+        >>> object1.register_dict['w']
+        i0%3
         >>> object1.execute_instruction(Instructions('eql', 'y', 'z'))
-        >>> assert object1.register_dict['y'] == 1
+        >>> object1.register_dict['y']
+        If(True, 1, 0)
         >>> object1.execute_instruction(Instructions('eql', 'z', 'w'))
-        >>> assert object1.register_dict['z'] == 0
+        >>> object1.register_dict['z']
+        If(i0%3 == 0, 1, 0)
         """
         if instruction.instruction == "inp":
-            assert isinstance(input, int)
-            self.register_dict[instruction.operand1] = input
+            self.register_dict[instruction.operand1] = Int('i' + str(self.input_counter))
+            self.input_counter += 1
         elif instruction.instruction == "add":
             if isinstance(instruction.operand2, int):
                 self.register_dict[instruction.operand1] += instruction.operand2
@@ -321,17 +247,11 @@ class ArithmeticLogicUnit(object):
                 self.register_dict[instruction.operand1] %= self.register_dict[instruction.operand2]
         elif instruction.instruction == "eql":
             if isinstance(instruction.operand2, int):
-                if isinstance(self.register_dict[instruction.operand1], int):
-                    self.register_dict[instruction.operand1] = 1 if self.register_dict[instruction.operand1] == \
-                                                                instruction.operand2 else 0
-                elif self.register_dict[instruction.operand1].free_symbols:
-                    self.register_dict[instruction.operand1] = Piecewise((1,  Eq(self.register_dict[instruction.operand1],
-                                                                                 instruction.operand2)),
-                                                                         (0, True))
+                self.register_dict[instruction.operand1] = If(self.register_dict[instruction.operand1] ==
+                                                              instruction.operand2, 1, 0)
             else:
-                self.register_dict[instruction.operand1] = Piecewise((1,  Eq(self.register_dict[instruction.operand1],
-                                                                             self.register_dict[instruction.operand2])),
-                                                                     (0, True))
+                self.register_dict[instruction.operand1] = If(self.register_dict[instruction.operand1] ==
+                                                              self.register_dict[instruction.operand2], 1, 0)
 
         return
 
@@ -357,6 +277,7 @@ class Instructions(object):
     # symbolic : sympy.core.operation
     #     Symbolic representation of this instruction
     """
+
     def __init__(self, instruction, operand1, operand2="N/A"):
         """
         Class initializer
@@ -425,7 +346,7 @@ def load_data(file_name):
                 instruction_list.append(Instructions(instruction_components[0],
                                                      instruction_components[1],
                                                      instruction_components[2] if instruction_components[2].isalpha()
-                                                                               else int(instruction_components[2])))
+                                                     else int(instruction_components[2])))
             else:
                 print("Input instruction discrepancy. Check input for correctness.")
 
@@ -448,7 +369,7 @@ def main():
     # print(alu_object)
 
     if arguments.code == 1:
-        alu_object.parse_program()
+        alu_object.find_largest_model_number()
         # alu_object.substitute_zs()
         # print(alu_object.find_largest_model_number_driver())
     # elif arguments.code == 2:
@@ -459,6 +380,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Constraints
-#
