@@ -13,3 +13,4 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 - C#
 - Racket
 - Java
+- Rust
