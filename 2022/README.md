@@ -14,3 +14,11 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 - Racket
 - Java
 - Rust
+
+## Progress
+
+| Name   	| Language 	| # Days Completed 	| Notes               	|
+|--------	|----------	|------------------	|---------------------	|
+| Anh    	|          	| 0                	|                     	|
+| John   	| Rust     	| 0                	| First Rust exposure 	|
+| Tanmay 	|          	| 0                	|                     	|
