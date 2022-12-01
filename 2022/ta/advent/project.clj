@@ -1,2 +1,2 @@
 (defproject advent "HEAD"
-  :dependencies [[org.clojure/clojure "1.4.0"]])
+  :dependencies [[org.clojure/clojure "1.11.1"]])
