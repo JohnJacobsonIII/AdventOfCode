@@ -1,0 +1,5 @@
+.lsp/
+.clj-kondo/
+target/
+.calva/
+.nrepl-port
