@@ -20,9 +20,9 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 | Name   	| Language 	| # Days Completed 	| Notes               	|
 |--------	|----------	|------------------	|---------------------	|
 | Anh    	| Go       	| 0                	|                     	|
-| Artem 	| ?        	| 0                	|                     	|
-| John   	| Haskell  	| 0                	|                     	|
+| Artem 	 | Haskell  	| 0                	|                     	|
+| John   	| Haskell  	| 1                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
 | Tanmay 	| Rust     	| 1                	|                     	|
 | Taylor 	| Clojure  	| 0                	|                     	|
-| Yuyou 	| C++     	| 1                	|                     	|
+| Yuyou 	 | C++     	 | 1                	|                     	|
