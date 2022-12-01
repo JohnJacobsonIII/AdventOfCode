@@ -25,4 +25,4 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 | Marisa 	| Haskell  	| 0                	|                     	|
 | Tanmay 	| Rust     	| 0                	|                     	|
 | Taylor 	| Clojure  	| 0                	|                     	|
-| Yuyou 	| C++     	| 0                	|                     	|
+| Yuyou 	| C++     	| 1                	|                     	|
