@@ -19,6 +19,10 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 
 | Name   	| Language 	| # Days Completed 	| Notes               	|
 |--------	|----------	|------------------	|---------------------	|
-| Anh    	|          	| 0                	|                     	|
-| John   	| Rust     	| 0                	| First Rust exposure 	|
-| Tanmay 	|          	| 0                	|                     	|
+| Anh    	| Go       	| 0                	|                     	|
+| Artem 	| ?        	| 0                	|                     	|
+| John   	| Haskell  	| 0                	|                     	|
+| Marisa 	| Haskell  	| 0                	|                     	|
+| Tanmay 	| Rust     	| 0                	|                     	|
+| Taylor 	| Clojure  	| 0                	|                     	|
+| Yuyou 	| C++     	| 0                	|                     	|
