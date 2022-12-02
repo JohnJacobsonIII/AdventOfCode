@@ -24,5 +24,5 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 | John   	| Haskell  	| 2                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
 | Tanmay 	| Rust     	| 2                	|                     	|
-| Taylor 	| Clojure  	| 1                	|                     	|
+| Taylor 	| Clojure  	| 2                	|                     	|
 | Yuyou 	| C++       	| 2                	|                     	|
