@@ -21,7 +21,7 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 |--------	|----------	|------------------	|---------------------	|
 | Anh    	| Go       	| 1                	|                     	|
 | Artem 	| Haskell  	| 0                	|                     	|
-| John   	| Haskell  	| 1                	|                     	|
+| John   	| Haskell  	| 2                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
 | Tanmay 	| Rust     	| 1                	|                     	|
 | Taylor 	| Clojure  	| 1                	|                     	|
