@@ -1,49 +1,32 @@
 module Main where
 
-import Data.List (sortBy)
-import Data.List.Split (splitOn)
+shapes :: String -> Int
+shapes "A" = 1
+shapes "B" = 2
+shapes "C" = 3
+shapes "X" = 1
+shapes "Y" = 2
+shapes "Z" = 3
 
-outcomes :: String -> Int
--- loss
-outcomes "A Z" = 0
-outcomes "B X" = 0
-outcomes "C Y" = 0
---draw
-outcomes "A X" = 3
-outcomes "B Y" = 3
-outcomes "C Z" = 3
---win
-outcomes "A Y" = 6
-outcomes "B Z" = 6
-outcomes "C X" = 6 
+processInput :: String -> [[String]]
+processInput = map words . lines
 
-shapes :: Char -> Int
-shapes 'X' = 1
-shapes 'Y' = 2
-shapes 'Z' = 3
+shapeScores :: [[String]] -> [[Int]]
+shapeScores = map (map shapes)
 
+-- if X,Y,Z are shapes, W/L is determined by difference. Each shape beats previous shape
+scoreFuncShape :: [Int] -> Int
+scoreFuncShape xs = (3 * (mod ((xs!!1 - xs!!0) + 1) 3)) + xs!!1
 
-
-processInput :: String -> [String]
-processInput = lines
-
-outcomeScores :: [String] -> [Int]
-outcomeScores = map outcomes
-
-shapeScores :: [String] -> [Int]
-shapeScores = map shapes . map (!! 2)
-
--- scoreRound :: [String] -> Int
--- scoreRound = outcomes 
-
-makeScores :: [String] -> [Int]
-makeScores xs = zipWith (+) (outcomeScores xs) (shapeScores xs)
+-- if X,Y,Z are W/L (part 2), determine points by subtracting from first value
+scoreFuncWL :: [Int] -> Int
+scoreFuncWL xs = (3 * (xs!!1 - 1)) + (mod (xs!!0 + xs!!1) 3) + 1
 
 totalScore :: [Int] -> Int
 totalScore = foldl (+) 0
 
-adventFunc :: [String] -> Int
-adventFunc = totalScore . makeScores
+adventFunc :: [[String]] -> Int
+adventFunc = totalScore . map scoreFuncWL . shapeScores
 
 main :: IO ()
 main = interact $ show . adventFunc . processInput
