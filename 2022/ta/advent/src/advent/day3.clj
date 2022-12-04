@@ -28,11 +28,10 @@
   (priority-map ch))
 
 (defn item-in-both-compartments [rucksack]
-  (as-> (split-at (/ (count rucksack) 2) rucksack) $
-    (map set $)
-    (reduce set/intersection $)
-    (take 1 $)
-    (nth $ 0)))
+  (->> (split-at (/ (count rucksack) 2) rucksack)
+       (map set)
+       (reduce set/intersection)
+       (first)))
 
 (item-in-both-compartments (sample-set 0))
 
@@ -48,11 +47,11 @@
 (defn common-in-threes [rucksacks]
   (->> rucksacks
        (partition 3)
-       (map #(as-> % $
-               (map set $)
-               (reduce set/intersection $)
-               (nth (take 1 $) 0)
-               (priority $)))
+       (map #(->> %
+                  (map set)
+                  (reduce set/intersection)
+                  (first)
+                  (priority)))
        (reduce +)))
 
 (common-in-threes sample-set)
