@@ -23,6 +23,7 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 | Artem 	| Haskell  	| 0                	|                     	|
 | John   	| Haskell  	| 3                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
-| Tanmay 	| Rust     	| 2                	|                     	|
+| Tanmay 	| Rust     	| 3                	|                     	|
+| Tapan		| Go		| 0			|			|
 | Taylor 	| Clojure  	| 2                	|                     	|
 | Yuyou 	| C++       	| 2                	|                     	|
