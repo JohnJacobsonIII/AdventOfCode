@@ -19,7 +19,7 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 
 | Name   	| Language 	| # Days Completed 	| Notes               	|
 |--------	|----------	|------------------	|---------------------	|
-| Anh    	| Go       	| 1                	|                     	|
+| Anh    	| Go       	| 5                	|                     	|
 | Artem 	| Haskell  	| 0                	|                     	|
 | John   	| Haskell  	| 2                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
