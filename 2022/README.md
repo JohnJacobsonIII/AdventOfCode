@@ -19,11 +19,11 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 
 | Name   	| Language 	| # Days Completed 	| Notes               	|
 |--------	|----------	|------------------	|---------------------	|
-| Anh    	| Go       	| 2                	|                     	|
+| Anh    	| Go       	| 5                	|                     	|
 | Artem 	| Haskell  	| 0                	|                     	|
 | John   	| Haskell  	| 4                	|                     	|
 | Marisa 	| Haskell  	| 0                	|                     	|
-| Tanmay 	| Rust     	| 4                	|                     	|
+| Tanmay 	| Rust     	| 6                	|                     	|
 | Tapan		| Go		| 0			|			|
-| Taylor 	| Clojure  	| 2                	|                     	|
-| Yuyou 	| C++       	| 2                	|                     	|
+| Taylor 	| Clojure  	| 5                	|                     	|
+| Yuyou 	| C++       	| 5                	|                     	|

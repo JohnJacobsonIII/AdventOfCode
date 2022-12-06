@@ -10,3 +10,5 @@
   + All you need is two functoins, isIn and overlap, to check if one interval contains the other and one is overlapped with the other. For part 1, you need isIn(a,b) || is isIn(b,a). For part 2, you need isIn(a,b)||isIn(b,a)||overlap(a,b) || overlap(b,a); 
 ## Day5
   + No much things to say. This is a pure string manipulation problem. Instead of handle the complicated cranes input, you should hard code those strings in your code for speed. The operations just truncate a suffix of a string and append it to another. The difference between part1 and 2 is if we need to reverse the suffix.
+## Day6
+  + All we need is to maintain a set of distinct chars, and check if the size meets requirement. Still, we can hard code the input string instead of reading from a file
