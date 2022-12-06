@@ -1,4 +1,3 @@
-use std::cmp::max;
 use std::env;
 use std::fs;
 
@@ -17,7 +16,7 @@ fn max_three_calories(v: Vec<&str>) -> u32 {
             sum += calorie;
         }
         // let sum = elf_calorie_int.into_iter().reduce(|a, b| a + b);
-        let sum = elf_calorie_int.into_iter().fold(0, |a, b| a + b);
+//        let sum = elf_calorie_int.into_iter().fold(0, |a, b| a + b);
         if sum > max3 {
             if sum > max2 {
                 if sum > max1 {
