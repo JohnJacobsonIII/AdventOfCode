@@ -7,7 +7,7 @@ version:             0.1.0.0
 synopsis:            Advent of Code 2022, Day 1
 -- description:
 -- bug-reports:
--- license:
+license:             BSD3
 license-file:        LICENSE
 author:              JohnJacobsonIII
 maintainer:          jrjacobsoniii@gmail.com
