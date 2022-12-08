@@ -23,8 +23,48 @@ impl State {
         }
     }
 
-    fn ls(&self, directory: &str) {
+    fn ls(&mut self) {
+        let command: &String = match self.commands.last() {
+            Some(command) => command,
+            None => ""
+        };
 
+        while command.split(' ').collect()[0] != "$" {
+            self.commands.pop();
+
+            if command.split(' ').collect()[0] == "dir" {
+                self.pwd.directories.push(Directory {
+                    name: String::from(command.split(' ').collect()[1]),
+                    parent: Some(Box::new(*self.pwd)),
+                    ..Default::default()
+                })
+            } else {
+                self.pwd.files.push(File {
+                    name: String::from(command.split(' ').collect()[1]),
+                    size: command.split(' ').collect()[1].parse().unwrap(),
+                })
+            }
+
+            let command: &String = match self.commands.last() {
+                Some(command) => command,
+                None => ""
+            };
+        }
+    }
+
+    fn consume_command(&mut self) {
+        while !self.commands.is_empty() {
+            match self.commands.last() {
+                Some(command) => {
+                    match command.split(' ').collect()[0] {
+                        "cd" => self.cd(command.split(' ').collect()[1]),
+                        "ls" => self.ls(),
+                        _ => ()
+                    };
+                }
+                None => ()
+            };
+        }
     }
 }
 
@@ -79,6 +119,9 @@ fn main() {
             name: String::from("/"),
             ..Default::default()
         },
-        commands: contents_split.iter().map(|x| String::from(x)).collect(),
+        commands: contents_split.iter().map(|x| String::from(*x)).collect(),
     };
+
+
+
 }
