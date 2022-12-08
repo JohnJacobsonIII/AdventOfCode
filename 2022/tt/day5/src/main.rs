@@ -34,11 +34,12 @@ impl SupplyStacks {
     fn complete_rearrangement_procedure(&mut self) {
         while !self.rearrangement_procedure.is_empty() {
             self.move_crates_in_stacks();
+            // println!("{:?}", self.get_stack_top());
         }
     }
 
     fn get_stack_top(&self) -> Vec<char>{
-        let stack_tops: Vec<char> = self.stacks.iter().map(|x| *x.last().unwrap()).collect();
+        let stack_tops: Vec<char> = self.stacks.iter().map(|x| *x.last().unwrap_or(&'?') ).collect();
 
 //        for stack in self.stacks.iter() {
 //            stack_tops.push(*stack.last().unwrap())
@@ -99,5 +100,5 @@ fn main() {
     };
 
     _supply_stacks.complete_rearrangement_procedure();
-    println!("{:?}", _supply_stacks.get_stack_top());
+    // println!("{:?}", _supply_stacks.get_stack_top());
 }
