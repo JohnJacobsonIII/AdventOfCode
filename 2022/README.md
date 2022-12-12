@@ -26,4 +26,4 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 | Tanmay 	| Rust     	| 8-{7}                	|                     	|
 | Tapan		| Go		| 0                 	|                       |
 | Taylor 	| Clojure  	| 5                	|                     	|
-| Yuyou 	| C++       	| 5                	|                     	|
+| Yuyou 	| C++       	| 12                	|                     	|
