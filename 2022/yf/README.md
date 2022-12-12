@@ -12,3 +12,7 @@
   + No much things to say. This is a pure string manipulation problem. Instead of handle the complicated cranes input, you should hard code those strings in your code for speed. The operations just truncate a suffix of a string and append it to another. The difference between part1 and 2 is if we need to reverse the suffix.
 ## Day6
   + All we need is to maintain a set of distinct chars, and check if the size meets requirement. Still, we can hard code the input string instead of reading from a file
+## Day7
+  + Maintain a filesystem counting all dirs larger than ceratin size. First, regard file as a dir with 0 items to avoid inheritance. Second, build a vector to save all dir. To express the tree structure, use the indexes in the vector. Third, use an unordered_set to avoid repeated inserting to the vector. 
+## Day8
+  + Maintain a "prefix" array in 4 directions. Say 0 for row prefix, 1 for row suffix, 2 for col prefix (from top to bottom), 3 for col suffix. By this method, you can eaisly get the tall tree of any directions. 
