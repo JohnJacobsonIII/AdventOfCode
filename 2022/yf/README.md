@@ -16,3 +16,14 @@
   + Maintain a filesystem counting all dirs larger than ceratin size. First, regard file as a dir with 0 items to avoid inheritance. Second, build a vector to save all dir. To express the tree structure, use the indexes in the vector. Third, use an unordered_set to avoid repeated inserting to the vector. 
 ## Day8
   + Maintain a "prefix" array in 4 directions. Say 0 for row prefix, 1 for row suffix, 2 for col prefix (from top to bottom), 3 for col suffix. By this method, you can eaisly get the tall tree of any directions. 
+## Day9
+  + Still a silumation problem. Maintain an array of knots. An easy way is mentioned in Day8. Mapping RLTD to 0123. Watch out the direction of knots moving.
+
+## Day10
+  + Pure simulation. Just remeber part 1 is "DURING" the cycle and part2 is "AFTER" the cycle.
+  
+## Day11
+  + Just simulate all monkeys. For part2, you should module the product of all test numbers to avoid using big integer.
+  
+## Day12
+  + Do a BFS on the graph with the condition. For the part2, reverse the start and end point and do another BFS with reversed setpping condition. Watch out don't cross border. A tip is to wrap the original graph with a large char (I used 'z' + 3 here). This can help in avoiding board checking in part1. 
