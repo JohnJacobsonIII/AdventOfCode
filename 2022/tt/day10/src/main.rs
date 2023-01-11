@@ -3,60 +3,75 @@ use std::fs;
 
 #[derive(Debug)]
 struct State {
-    cycles: u32,
+    cycles: i32,
+    fetch_next: bool,
     x: i32,
-    commands: Vec<String>
+    current: String,
+    parameter: i32,
+    incubation_cycles: u32,
+    commands: Vec<String>,
+
 }
 
 impl State {
-    fn execute_next_command(&mut self) {
-        let command = self.commands.pop().unwrap();
-//        println!("{}", command)
+    fn increment_cycle(&mut self) {
+        if self.fetch_next == true {
+            self.execute_current_fetch_next_command();
+        }
 
-        let command_split: Vec<&str> = command.split(' ').collect();
-//        println!("{}", command_split.len());
+        self.cycles += 1;
+        self.incubation_cycles += 1;
 
-        match command_split.len() {
-            1 => {
-                self.cycles+=1;
-            },
-            2 => {
-                self.cycles+=2;
-                self.x+=command_split[1].parse::<i32>().unwrap();
-            },
-            _ => {},
+        if self.current == "addx" &&
+            self.incubation_cycles == 2 {
+            self.fetch_next = true;
         }
     }
 
-    fn execute_n_commands(&mut self, n: u32) {
-        for _ in 0..n {
-            self.execute_next_command();
+    fn execute_current_fetch_next_command(&mut self) {
+        if self.current == "addx" {
+            self.x += &self.parameter;
         }
-    }
 
-    fn execute_till_n_cycles(&mut self, n: u32) {
-        while self.cycles < n {
-            let command = self.commands.last().unwrap();
-//        println!("{}", command)
-
+        if let Some(command) = self.commands.pop() {
             let command_split: Vec<&str> = command.split(' ').collect();
-//        println!("{}", command_split.len());
+            self.current = command_split[0].to_string();
+            if command_split.len() == 2 {
+                self.fetch_next = false;
+                self.parameter = command_split[1].parse::<i32>().unwrap();
+            };
+            self.incubation_cycles = 0;
+        } else {
+            self.parameter = 0
+        };
 
-            match command_split.len() {
-                2 => {
-                    if &self.cycles+3 > n {
-                        break;
-                    };
-                },
-                _ => {},
-            }
-            self.execute_next_command();
+    }
+
+    fn execute_till_n_cycles(&mut self, n: i32) {
+        while self.cycles < n {
+            self.increment_cycle();
+            self.draw_pixel();
+//            println!("{:?}", self);
 
         }
     }
 
-    fn calculate_signal_strength(self) -> i32 {
-        self.x * self.cycles as i32
+    fn calculate_signal_strength(&self) -> i32 {
+        &self.x * &self.cycles
+    }
+
+    fn draw_pixel(&self) {
+        if (&self.cycles - 1)%40 == &self.x - 1 ||
+            (&self.cycles - 1)%40 == self.x ||
+            (&self.cycles - 1)%40 == &self.x + 1 {
+            print!("#");
+        } else {
+            print!(".");
+        }
+
+        if &self.cycles % 40 == 0 {
+            println!();
+        }
     }
 }
 
@@ -75,31 +90,39 @@ fn main() {
 
     let mut cpu_state = State {
         cycles: 0,
+        fetch_next: true,
         x: 1,
+        current: "noop".to_string(),
+        parameter: 0,
+        incubation_cycles: 0,
         commands: contents_split.iter().map(|x| String::from(*x)).collect(),
     };
 
-    let mut signal_strength: i32 = 0;
+//    let mut signal_strength: i32 = 0;
 
 //    println!("{:?}", cpu_state);
-//    cpu_state.execute_n_commands(20);
+    cpu_state.execute_till_n_cycles(240);
 //    println!("{:?}", cpu_state);
 
 //    cpu_state.execute_till_n_cycles(20);
-//    signal_strength += &cpu_state.x * 20;
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
 //    cpu_state.execute_till_n_cycles(60);
-//    signal_strength += &cpu_state.x * 60;
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
 //    cpu_state.execute_till_n_cycles(100);
-//    signal_strength += &cpu_state.x * 100;
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
 //    cpu_state.execute_till_n_cycles(140);
-//    signal_strength += &cpu_state.x * 140;
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
 //    cpu_state.execute_till_n_cycles(180);
-//    signal_strength += &cpu_state.x * 180;
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
 //    cpu_state.execute_till_n_cycles(220);
-//    signal_strength += &cpu_state.x * 220;
-
-
-
-    println!("{}", signal_strength);
+//    signal_strength += cpu_state.calculate_signal_strength();
+//    println!("{:?}", cpu_state);
+//
+//    println!("{}", signal_strength);
 
 }
