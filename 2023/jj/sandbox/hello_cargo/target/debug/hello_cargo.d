@@ -1,0 +1,1 @@
+/uufs/chpc.utah.edu/common/home/u1201441/repos/AdventOfCode/2023/jj/sandbox/hello_cargo/target/debug/hello_cargo: /uufs/chpc.utah.edu/common/home/u1201441/repos/AdventOfCode/2023/jj/sandbox/hello_cargo/src/main.rs
