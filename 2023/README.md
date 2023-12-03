@@ -18,8 +18,8 @@ It's suggested that all participants attempt to solve the challenges in an unfam
 
 ## Progress
 
-| Name    | Language| # Days Completed| Notes |
-|---------|---------|-----------------|-------|
-| Anh     | Python  | 0               |       |
-| John    | Rust    | 0               |       |
-| Tanmay  | Racket  | 0               |       |
+| Name    | Language| # Days Completed | Notes   |
+|---------|---------|------------------|---------|
+| Anh     | Python  | 0                |         |
+| John    | Rust    | 0                |         |
+| Tanmay  | Racket  | 1                | Winning |
